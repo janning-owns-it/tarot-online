@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/tarot")
 public class TarotController {
 
-    TarotService tarotService;
+    private TarotService tarotService;
 
     @GetMapping
     public TarotReadingResponse getResult(@RequestParam String querentsQuestion) throws Exception {
-        tarotService = new TarotService();
         return tarotService.getReading(querentsQuestion);
     }
 }

@@ -12,6 +12,10 @@ public class TarotService {
 
     private ShufflerService shufflerService;
 
+    public TarotService(ShufflerService shufflerService) {
+        this.shufflerService = shufflerService;
+    }
+
     public TarotReadingResponse getReading(String querentsQuestion) throws IOException {
         return getArcaneGuideResponse(querentsQuestion);
     }
@@ -28,6 +32,6 @@ public class TarotService {
 
     private String askToArcaneGuide(String querentsQuestion, String sortedCardsToTextInOrder) throws IOException {
         new PromptManager().getPrompts(querentsQuestion, sortedCardsToTextInOrder);
-        return "coffee";
+        return querentsQuestion + "\n" + sortedCardsToTextInOrder;
     }
 }

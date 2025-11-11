@@ -21,7 +21,7 @@ public class PromptManager {
     }
 
     private String getSystemPrompt() throws IOException {
-        Resource resource = new ClassPathResource("templates/systemPromptTemplate.txt");
+        Resource resource = new ClassPathResource("templates/prompts/systemPromptTemplate.txt");
 
         return Files.readString(resource.getFile().toPath());
     }
