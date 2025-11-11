@@ -3,19 +3,20 @@ package com.janning_owns_it.tarot.service;
 import com.janning_owns_it.tarot.model.Deck;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+
 
 @Service
 public class ShufflerService {
 
-    public List<String> sortCards() {
-        List<String> sortedCards = new ArrayList<>();
+    public Set<String> sortCards() {
+        Set<String> sortedCards = new HashSet<>();
         Deck deck = new Deck();
         Map<Integer, String> cards = deck.getCards();
-        List<Integer> randomCardNumbers = randomCardNumbers(3, 156);
+        Set<Integer> randomCardNumbers = randomCardNumbers(3, 156);
 
         for (Integer randomCardNumber : randomCardNumbers) {
             sortedCards.add(cards.get(randomCardNumber));
@@ -24,25 +25,23 @@ public class ShufflerService {
         return sortedCards;
     }
 
-    private List<Integer> randomCardNumbers(Integer cardsToSort, Integer maxCardsToSort) {
-        List<Integer> randomCardNumbers = new ArrayList<>();
+    private Set<Integer> randomCardNumbers(Integer cardsToSort, Integer maxCardsToSort) {
+        Set<Integer> randomCardNumbers = new HashSet<>();
         Random random = new Random();
 
         while (randomCardNumbers.size() < cardsToSort) {
-            int number = random.nextInt(maxCardsToSort);
-            if (!randomCardNumbers.contains(number)) {
-                randomCardNumbers.add(number);
-            }
+            randomCardNumbers.add(random.nextInt(maxCardsToSort));
         }
 
         return randomCardNumbers;
     }
 
-    public String sortedCardsToTextInOrder(List<String> sortedCards) {
+    public String sortedCardsToTextInOrder(Set<String> sortedCards) {
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < sortedCards.size(); i++) {
-            sb.append(i + 1).append(" -> ").append(sortedCards.get(i)).append("\n");
+        int count = 1;
+        for (String card : sortedCards) {
+            sb.append(count++).append(" -> ").append(card).append("\n");
         }
 
         return sb.toString();

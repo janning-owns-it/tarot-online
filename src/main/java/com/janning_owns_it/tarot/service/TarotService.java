@@ -5,7 +5,7 @@ import com.janning_owns_it.tarot.model.TarotReadingResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 @Service
 public class TarotService {
@@ -21,7 +21,7 @@ public class TarotService {
     }
 
     private TarotReadingResponse getArcaneGuideResponse(String querentsQuestion) throws IOException {
-        List<String> sortedCards = shufflerService.sortCards();
+        Set<String> sortedCards = shufflerService.sortCards();
 
         TarotReadingResponse response = new TarotReadingResponse();
         response.setArcaneResponse(askToArcaneGuide(querentsQuestion, shufflerService.sortedCardsToTextInOrder(sortedCards)));

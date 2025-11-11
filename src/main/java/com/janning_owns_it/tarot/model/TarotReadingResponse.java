@@ -1,11 +1,11 @@
 package com.janning_owns_it.tarot.model;
 
-import java.util.List;
+import java.util.Set;
 
 public class TarotReadingResponse {
 
     String arcaneResponse;
-    List<String> sortedCardsInOrder;
+    Set<String> sortedCardsInOrder;
 
     public String getArcaneResponse() {
         return arcaneResponse;
@@ -15,11 +15,11 @@ public class TarotReadingResponse {
         this.arcaneResponse = arcaneResponse;
     }
 
-    public List<String> getSortedCardsInOrder() {
+    public Set<String> getSortedCardsInOrder() {
         return sortedCardsInOrder;
     }
 
-    public void setSortedCardsInOrder(List<String> sortedCardsInOrder) {
+    public void setSortedCardsInOrder(Set<String> sortedCardsInOrder) {
         this.sortedCardsInOrder = sortedCardsInOrder;
     }
 }
