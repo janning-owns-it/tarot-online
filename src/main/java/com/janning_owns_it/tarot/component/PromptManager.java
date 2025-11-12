@@ -13,7 +13,7 @@ public class PromptManager {
 
     public Map<String, String> getPrompts(String querentsQuestion, String sortedCardsToTextInOrder) throws IOException {
         return Map.of(
-                "system", getSystemPrompt(), "user", querentsQuestion + sortedCardsToTextInOrder
+                "system", getSystemPrompt(), "user", querentsQuestion + "\n" + sortedCardsToTextInOrder
         );
     }
 

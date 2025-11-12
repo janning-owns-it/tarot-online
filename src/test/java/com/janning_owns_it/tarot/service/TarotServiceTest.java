@@ -2,6 +2,8 @@ package com.janning_owns_it.tarot.service;
 
 import com.janning_owns_it.tarot.model.TarotReadingResponse;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
 
@@ -13,8 +15,9 @@ class TarotServiceTest {
     @Test
     void getReadingTest() throws IOException {
         ShufflerService shufflerService = new ShufflerService();
-        TarotService tarotService = new TarotService(shufflerService);
-        String question = "Will I find true love soon?";
+        OpenAiIntegration openAiIntegration = new OpenAiIntegration();
+        TarotService tarotService = new TarotService(shufflerService, openAiIntegration);
+        String question = "Will my work be a success?";
         TarotReadingResponse response = tarotService.getReading(question);
 
         assertNotNull(response);
