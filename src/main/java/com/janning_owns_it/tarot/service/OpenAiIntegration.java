@@ -14,7 +14,7 @@ import java.util.Map;
 @Service
 public class OpenAiIntegration {
 
-    OpenAiConfig openAiConfig = new OpenAiConfig();
+    private OpenAiConfig openAiConfig = new OpenAiConfig();
 
     public String getArcaneResponse(Map<String, String> prompts) throws IOException {
         OpenAIClient openAIClient = OpenAIOkHttpClient.builder().apiKey(openAiConfig.API_KEY).build();
