@@ -5,22 +5,25 @@ import com.janning_owns_it.tarot.model.TarotReadingResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 
 @Service
 public class TarotService {
 
     private ShufflerService shufflerService;
+    private OpenAiIntegration openAiIntegration;
 
-    public TarotService(ShufflerService shufflerService) {
+    public TarotService(ShufflerService shufflerService, OpenAiIntegration openAiIntegration) {
         this.shufflerService = shufflerService;
+        this.openAiIntegration = openAiIntegration;
     }
 
     public TarotReadingResponse getReading(String querentsQuestion) throws IOException {
-        return getArcaneGuideResponse(querentsQuestion);
+        return getReadingResponse(querentsQuestion);
     }
 
-    private TarotReadingResponse getArcaneGuideResponse(String querentsQuestion) throws IOException {
+    private TarotReadingResponse getReadingResponse(String querentsQuestion) throws IOException {
         Set<String> sortedCards = shufflerService.sortCards();
 
         TarotReadingResponse response = new TarotReadingResponse();
@@ -31,7 +34,7 @@ public class TarotService {
     }
 
     private String askToArcaneGuide(String querentsQuestion, String sortedCardsToTextInOrder) throws IOException {
-        new PromptManager().getPrompts(querentsQuestion, sortedCardsToTextInOrder);
-        return querentsQuestion + "\n" + sortedCardsToTextInOrder;
+        Map<String, String> prompts = new PromptManager().getPrompts(querentsQuestion, sortedCardsToTextInOrder);
+        return openAiIntegration.getArcaneResponse(prompts);
     }
 }

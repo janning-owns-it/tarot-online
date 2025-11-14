@@ -13,7 +13,8 @@ class TarotServiceTest {
     @Test
     void getReadingTest() throws IOException {
         ShufflerService shufflerService = new ShufflerService();
-        TarotService tarotService = new TarotService(shufflerService);
+        OpenAiIntegration openAiIntegration = new OpenAiIntegration();
+        TarotService tarotService = new TarotService(shufflerService, openAiIntegration);
         String question = "Will I find true love soon?";
         TarotReadingResponse response = tarotService.getReading(question);
 

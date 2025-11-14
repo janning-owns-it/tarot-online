@@ -11,12 +11,9 @@ import java.util.Map;
 @Component
 public class PromptManager {
 
-    public Map<String, Object> getPrompts(String querentsQuestion, String sortedCardsToTextInOrder) throws IOException {
+    public Map<String, String> getPrompts(String querentsQuestion, String sortedCardsToTextInOrder) throws IOException {
         return Map.of(
-                "messages", new Object[]{
-                        Map.of("role", "system", "content", getSystemPrompt()),
-                        Map.of("role", "user", "content", querentsQuestion + sortedCardsToTextInOrder),
-                }
+                "system", getSystemPrompt(), "user", querentsQuestion + "\n" + sortedCardsToTextInOrder
         );
     }
 
