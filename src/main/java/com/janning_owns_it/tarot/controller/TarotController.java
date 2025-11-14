@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/tarot")
+@RequestMapping("/tarot-online")
 public class TarotController {
 
-    private TarotService tarotService;
+    private final TarotService tarotService;
+
+    public TarotController(TarotService tarotService) {
+        this.tarotService = tarotService;
+    }
 
     @GetMapping
     public TarotReadingResponse getResult(@RequestParam String querentsQuestion) throws Exception {
