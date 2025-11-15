@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TarotServiceTest {
 
@@ -22,5 +23,21 @@ class TarotServiceTest {
         assertNotNull(response.getArcaneResponse());
         assertNotNull(response.getSortedCardsInOrder());
         assertEquals(3, response.getSortedCardsInOrder().size());
+    }
+
+    @Test
+    void validateQuerentsQuestion() {
+        TarotService tarotService = new TarotService(null, null);
+
+        assertEquals("The question cannot be null or empty", getExceptionMessage(tarotService, null));
+        assertEquals("The question cannot be null or empty", getExceptionMessage(tarotService, ""));
+        assertEquals("The question must be less than 1000 characters", getExceptionMessage(tarotService, "a".repeat(1001)));
+    }
+
+    private String getExceptionMessage(TarotService tarotService, String question) {
+        return assertThrows(
+                IllegalArgumentException.class,
+                () -> tarotService.getReading(question)
+        ).getMessage();
     }
 }

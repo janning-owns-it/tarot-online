@@ -20,6 +20,7 @@ public class TarotService {
     }
 
     public TarotReadingResponse getReading(String querentsQuestion) throws IOException {
+        validateQuerentsQuestion(querentsQuestion);
         return getReadingResponse(querentsQuestion);
     }
 
@@ -36,5 +37,14 @@ public class TarotService {
     private String askToArcaneGuide(String querentsQuestion, String sortedCardsToTextInOrder) throws IOException {
         Map<String, String> prompts = new PromptManager().getPrompts(querentsQuestion, sortedCardsToTextInOrder);
         return openAiIntegration.getArcaneResponse(prompts);
+    }
+
+    private void validateQuerentsQuestion(String querentsQuestion) {
+        if (querentsQuestion == null || querentsQuestion.isEmpty()) {
+            throw new IllegalArgumentException("The question cannot be null or empty");
+        }
+        if (querentsQuestion.length() > 1000) {
+            throw new IllegalArgumentException("The question must be less than 1000 characters");
+        }
     }
 }
