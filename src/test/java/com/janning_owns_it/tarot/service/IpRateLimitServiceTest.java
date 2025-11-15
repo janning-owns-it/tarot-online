@@ -33,15 +33,12 @@ public class IpRateLimitServiceTest {
         Mockito.when(valueOps.get(Mockito.anyString()))
                 .thenAnswer(invocation -> store.get(invocation.getArgument(0)));
 
-        Answer<Void> storeAnswer = invocation -> {
+        Mockito.doAnswer(invocation -> {
             String key = invocation.getArgument(0);
             String value = invocation.getArgument(1);
             store.put(key, value);
             return null;
-        };
-
-        Mockito.doAnswer(storeAnswer).when(valueOps).set(Mockito.anyString(), Mockito.anyString());
-        Mockito.doAnswer(storeAnswer).when(valueOps).set(Mockito.anyString(), Mockito.anyString(), Mockito.any(Duration.class));
+        }).when(valueOps).set(Mockito.anyString(), Mockito.anyString(), Mockito.any(Duration.class));
 
         redisTemplateMock = Mockito.mock(RedisTemplate.class);
         Mockito.when(redisTemplateMock.opsForValue()).thenReturn(valueOps);

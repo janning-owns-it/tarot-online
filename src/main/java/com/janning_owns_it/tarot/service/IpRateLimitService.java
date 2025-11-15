@@ -1,13 +1,13 @@
 package com.janning_owns_it.tarot.service;
 
 import com.janning_owns_it.tarot.exception.ApiException;
+import com.janning_owns_it.tarot.helper.RedisTTLHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 
 @Service
 public class IpRateLimitService {
@@ -27,16 +27,7 @@ public class IpRateLimitService {
             throw new ApiException("Daily usage limit of 3 requests per IP has been reached.", HttpStatus.TOO_MANY_REQUESTS);
         }
 
-        if (count == 0) {
-            redisTemplate.opsForValue().set(ip, "1", getTimeUntilMidnight());
-        } else {
-            redisTemplate.opsForValue().set(ip, String.valueOf(count + 1));
-        }
-    }
-
-    private Duration getTimeUntilMidnight() {
-        LocalDateTime now = LocalDateTime.now();
-        return Duration.between(now, now.toLocalDate().plusDays(1).atStartOfDay());
+        redisTemplate.opsForValue().set(ip, String.valueOf(count + 1), Duration.ofSeconds(RedisTTLHelper.getSecondsUntilMidnight()));
     }
 
     private String getUserIp(HttpServletRequest request) {
