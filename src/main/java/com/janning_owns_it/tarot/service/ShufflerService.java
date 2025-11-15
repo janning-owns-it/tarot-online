@@ -8,14 +8,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-
 @Service
 public class ShufflerService {
 
     public Set<String> sortCards() {
         Set<String> sortedCards = new HashSet<>();
-        Deck deck = new Deck();
-        Map<Integer, String> cards = deck.getCards();
+        Map<Integer, String> cards = new Deck().getCards();
         Set<Integer> randomCardNumbers = randomCardNumbers(3, 156);
 
         for (Integer randomCardNumber : randomCardNumbers) {

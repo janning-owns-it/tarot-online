@@ -2,6 +2,7 @@ package com.janning_owns_it.tarot.controller;
 
 import com.janning_owns_it.tarot.model.TarotReadingResponse;
 import com.janning_owns_it.tarot.service.TarotService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +19,7 @@ public class TarotController {
     }
 
     @GetMapping
-    public TarotReadingResponse getResult(@RequestParam String querentsQuestion) throws Exception {
-        return tarotService.getReading(querentsQuestion);
+    public TarotReadingResponse getResult(@RequestParam String querentsQuestion, HttpServletRequest request) throws Exception {
+        return tarotService.getReading(querentsQuestion, request);
     }
 }

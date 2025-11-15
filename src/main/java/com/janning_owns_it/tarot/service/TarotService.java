@@ -1,7 +1,10 @@
 package com.janning_owns_it.tarot.service;
 
 import com.janning_owns_it.tarot.component.PromptManager;
+import com.janning_owns_it.tarot.exception.ApiException;
 import com.janning_owns_it.tarot.model.TarotReadingResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,14 +16,18 @@ public class TarotService {
 
     private ShufflerService shufflerService;
     private OpenAiIntegration openAiIntegration;
+    private IpRateLimitService ipRateLimitService;
 
-    public TarotService(ShufflerService shufflerService, OpenAiIntegration openAiIntegration) {
+    public TarotService(ShufflerService shufflerService, OpenAiIntegration openAiIntegration,
+                        IpRateLimitService ipRateLimitService) {
         this.shufflerService = shufflerService;
         this.openAiIntegration = openAiIntegration;
+        this.ipRateLimitService = ipRateLimitService;
     }
 
-    public TarotReadingResponse getReading(String querentsQuestion) throws IOException {
+    public TarotReadingResponse getReading(String querentsQuestion, HttpServletRequest request) throws IOException {
         validateQuerentsQuestion(querentsQuestion);
+        ipRateLimitService.checkLimit(request);
         return getReadingResponse(querentsQuestion);
     }
 
@@ -41,10 +48,10 @@ public class TarotService {
 
     private void validateQuerentsQuestion(String querentsQuestion) {
         if (querentsQuestion == null || querentsQuestion.isEmpty()) {
-            throw new IllegalArgumentException("The question cannot be null or empty");
+            throw new ApiException("The question cannot be null or empty.", HttpStatus.BAD_REQUEST);
         }
         if (querentsQuestion.length() > 1000) {
-            throw new IllegalArgumentException("The question must be less than 1000 characters");
+            throw new ApiException("The question must be less than 1000 characters.", HttpStatus.BAD_REQUEST);
         }
     }
 }
