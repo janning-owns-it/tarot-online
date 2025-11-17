@@ -5,7 +5,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.util.Map;
 
 @Component
@@ -19,7 +19,8 @@ public class PromptManager {
 
     private String getSystemPrompt() throws IOException {
         Resource resource = new ClassPathResource("templates/prompts/systemPromptTemplate.txt");
-
-        return Files.readString(resource.getFile().toPath());
+        try (InputStream inputStream = resource.getInputStream()) {
+            return new String(inputStream.readAllBytes());
+        }
     }
 }
