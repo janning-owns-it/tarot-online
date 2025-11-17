@@ -134,11 +134,16 @@ cd tarot-online
 ```
 ### 2. Run the project
 
+Before running the project, make sure you have configured your OpenAI settings in the previous step.
+
+You can run the project in **two different ways**:
+
 #### > Run with Docker (recommended for production)
 
 ```bash
 docker compose build && docker compose up -d
 ```
+##### OR
 
 #### > Run with Maven (local environment)
 
