@@ -129,7 +129,7 @@ public class OpenAiConfig {
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-user/tarot-online.git
+git clone https://github.com/janning-owns-it/tarot-online.git
 cd tarot-online
 ```
 ### 2. Run the project
