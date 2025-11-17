@@ -26,6 +26,7 @@ The system receives the querent’s question, draws cards, interprets the result
 | Redis | **8.2.3** |
 | Apache Maven | **3.9.11+** |
 | OpenAI API | **GPT-4.6.1** |
+| Docker | **28.5.2** |
 
 ---
 
@@ -131,8 +132,15 @@ public class OpenAiConfig {
 git clone https://github.com/your-user/tarot-online.git
 cd tarot-online
 ```
+### 2. Run the project
 
-### 2. Run with Maven
+#### > Run with Docker (recommended for production)
+
+```bash
+docker compose build && docker compose up -d
+```
+
+#### > Run with Maven (local environment)
 
 ```bash
 mvn clean install && mvn spring-boot:run
