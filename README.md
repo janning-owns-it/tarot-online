@@ -106,7 +106,7 @@ Create a `.env` file in the root of your project containing the following enviro
 ```.env
 OPENAI_API_KEY=your-openai-api-key-here
 OPENAI_MAX_TOKENS=1000
-OPENAI_CHAT_MODEL=gpt-3.5-turbo
+OPENAI_CHAT_MODEL=gpt-4.1
 ```
 
 These variables will be automatically loaded in your application using `Dotenv`:
