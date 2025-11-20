@@ -23,7 +23,7 @@ public class OpenAiIntegration {
                 .model(ChatModel.of(openAiConfig.MODEL))
                 .addSystemMessage(prompts.get("system"))
                 .addUserMessage(prompts.get("user"))
-                .maxTokens(openAiConfig.MAX_TOKENS)
+                .maxCompletionTokens(openAiConfig.MAX_TOKENS)
                 .build();
 
         ChatCompletion completion = openAIClient.chat().completions().create(params);
