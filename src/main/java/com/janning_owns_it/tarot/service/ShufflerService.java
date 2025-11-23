@@ -14,16 +14,20 @@ public class ShufflerService {
     public Set<String> sortCards() {
         Set<String> sortedCards = new HashSet<>();
         Map<Integer, String> cards = new Deck().getCards();
-        Set<Integer> randomCardNumbers = randomCardNumbers(3, 156);
+        int cardsQuantity = cards.size();
 
-        for (Integer randomCardNumber : randomCardNumbers) {
-            sortedCards.add(cards.get(randomCardNumber));
+        for (Integer randomCardNumber : randomCardNumbers(3, cardsQuantity * 2)) {
+            if (randomCardNumber > cardsQuantity) {
+                sortedCards.add(cards.get(randomCardNumber - cardsQuantity) + " (Reversed)");
+            } else {
+                sortedCards.add(cards.get(randomCardNumber));
+            }
         }
 
         return sortedCards;
     }
 
-    private Set<Integer> randomCardNumbers(Integer cardsToSort, Integer maxCardsToSort) {
+    private Set<Integer> randomCardNumbers(int cardsToSort, int maxCardsToSort) {
         Set<Integer> randomCardNumbers = new HashSet<>();
         Random random = new Random();
 
