@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
@@ -23,11 +22,13 @@ public class IpRateLimitServiceTest {
     private HttpServletRequest requestMock;
     private RedisTemplate<String, String> redisTemplateMock;
 
+    private Map<String, String> store;
+
     @BeforeEach
     void setup() {
         requestMock = Mockito.mock(HttpServletRequest.class);
 
-        Map<String, String> store = new HashMap<>();
+        store = new HashMap<>();
         ValueOperations<String, String> valueOps = Mockito.mock(ValueOperations.class);
 
         Mockito.when(valueOps.get(Mockito.anyString()))
@@ -47,25 +48,48 @@ public class IpRateLimitServiceTest {
     }
 
     @Test
-    void checkLimit() {
+    void checkLimitByFingerprint() {
+        Mockito.when(requestMock.getHeader("X-Device-Id")).thenReturn("fingerPrint-Test");
+
+        simulateRequests(3);
+
+        ApiException apiException = assertThrows(
+                ApiException.class,
+                () -> ipRateLimitService.checkLimit(requestMock)
+        );
+
+        assertEquals("You’ve reached your daily reading limit. Come back tomorrow.", apiException.getMessage());
+        assertEquals(HttpStatus.TOO_MANY_REQUESTS, apiException.getStatus());
+    }
+
+    @Test
+    void checkLimitByIp() {
         Mockito.when(requestMock.getRemoteAddr()).thenReturn("123.45.67.89");
+        Mockito.when(requestMock.getHeader("X-Device-Id")).thenReturn(null);
 
-        simulateRequests();
+        simulateRequests(20);
 
-        ApiException apiException = getException();
-        assertEquals("Daily usage limit of 3 requests per IP has been reached.", apiException.getMessage());
+        ApiException apiException = assertThrows(
+                ApiException.class,
+                () -> ipRateLimitService.checkLimit(requestMock)
+        );
+
+        assertEquals("The oracle is resting for today. Come back tomorrow.", apiException.getMessage());
         assertEquals(HttpStatus.TOO_MANY_REQUESTS, apiException.getStatus());
     }
 
     @Test
     void checkLimitIfXForwardedFor() {
-        Mockito.when(requestMock.getHeader("X-Forwarded-For"))
-                .thenReturn("123.45.67.89");
+        Mockito.when(requestMock.getHeader("X-Forwarded-For")).thenReturn("123.45.67.89");
 
-        simulateRequests();
+        simulateRequests(20);
 
-        ApiException apiException = getException();
-        assertEquals("Daily usage limit of 3 requests per IP has been reached.", apiException.getMessage());
+        ApiException apiException = assertThrows(
+                ApiException.class,
+                () -> ipRateLimitService.checkLimit(requestMock)
+        );
+
+        assertEquals("The oracle is resting for today. Come back tomorrow.", apiException.getMessage());
         assertEquals(HttpStatus.TOO_MANY_REQUESTS, apiException.getStatus());
     }
 
@@ -73,22 +97,19 @@ public class IpRateLimitServiceTest {
     void checkLimitIfXrealIp() {
         Mockito.when(requestMock.getHeader("X-Real-IP")).thenReturn("123.45.67.89");
 
-        simulateRequests();
+        simulateRequests(20);
 
-        ApiException apiException = getException();
-        assertEquals("Daily usage limit of 3 requests per IP has been reached.", apiException.getMessage());
-        assertEquals(HttpStatus.TOO_MANY_REQUESTS, apiException.getStatus());
-    }
-
-    private ApiException getException() {
-        return assertThrows(
+        ApiException apiException = assertThrows(
                 ApiException.class,
                 () -> ipRateLimitService.checkLimit(requestMock)
         );
+
+        assertEquals("The oracle is resting for today. Come back tomorrow.", apiException.getMessage());
+        assertEquals(HttpStatus.TOO_MANY_REQUESTS, apiException.getStatus());
     }
 
-    private void simulateRequests() {
-        for (int i = 0; i < 3; i++) {
+    private void simulateRequests(int quantity) {
+        for (int i = 0; i < quantity; i++) {
             ipRateLimitService.checkLimit(requestMock);
         }
     }

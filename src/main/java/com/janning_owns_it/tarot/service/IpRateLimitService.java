@@ -19,15 +19,24 @@ public class IpRateLimitService {
     }
 
     public void checkLimit(HttpServletRequest request) {
-        String ip = getUserIp(request);
-        String currentValue = redisTemplate.opsForValue().get(ip);
-        int count = currentValue == null ? 0 : Integer.parseInt(currentValue);
+        checkLimitByIp(getUserIp(request));
+        checkLimitByFingerPrint(request);
+    }
 
-        if (count >= 3) {
-            throw new ApiException("Daily usage limit of 3 requests per IP has been reached.", HttpStatus.TOO_MANY_REQUESTS);
+    private void checkLimitByFingerPrint(HttpServletRequest request) {
+        String fingerPrint = getFingerPrint(request);
+        if (fingerPrint != null && !fingerPrint.isEmpty()) {
+            checkQuota("fingerPrint:" + fingerPrint, 3,
+                    "You’ve reached your daily reading limit. Come back tomorrow.");
         }
+    }
 
-        redisTemplate.opsForValue().set(ip, String.valueOf(count + 1), Duration.ofSeconds(RedisTTLHelper.getSecondsUntilMidnight()));
+    private String getFingerPrint(HttpServletRequest request) {
+        return request.getHeader("X-Device-Id");
+    }
+
+    private void checkLimitByIp(String ip) {
+        checkQuota("ip:" + ip, 20, "The oracle is resting for today. Come back tomorrow.");
     }
 
     private String getUserIp(HttpServletRequest request) {
@@ -42,6 +51,18 @@ public class IpRateLimitService {
         }
 
         return request.getRemoteAddr();
+    }
+
+    private void checkQuota(String id, int quota, String message) {
+        String currentValue = redisTemplate.opsForValue().get(id);
+        int count = currentValue == null ? 0 : Integer.parseInt(currentValue);
+
+        if (count >= quota) {
+            throw new ApiException(message, HttpStatus.TOO_MANY_REQUESTS);
+        }
+
+        redisTemplate.opsForValue().set(id, String.valueOf(count + 1),
+                Duration.ofSeconds(RedisTTLHelper.getSecondsUntilMidnight()));
     }
 }
 
