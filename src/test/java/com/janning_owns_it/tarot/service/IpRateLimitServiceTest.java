@@ -51,7 +51,7 @@ public class IpRateLimitServiceTest {
     void checkLimitByFingerprint() {
         Mockito.when(requestMock.getHeader("X-Device-Id")).thenReturn("fingerPrint-Test");
 
-        simulateRequests(3);
+        simulateRequests(1);
 
         ApiException apiException = assertThrows(
                 ApiException.class,
