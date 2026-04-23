@@ -26,7 +26,7 @@ public class IpRateLimitService {
     private void checkLimitByFingerPrint(HttpServletRequest request) {
         String fingerPrint = getFingerPrint(request);
         if (fingerPrint != null && !fingerPrint.isEmpty()) {
-            checkQuota("fingerPrint:" + fingerPrint, 3,
+            checkQuota("fingerPrint:" + fingerPrint, 1,
                     "You’ve reached your daily reading limit. Come back tomorrow.");
         }
     }
